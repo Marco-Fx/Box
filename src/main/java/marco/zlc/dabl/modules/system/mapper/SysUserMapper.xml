@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="marco.zlc.dabl.modules.system.dao.SysUserMapper">
+
+    <resultMap id="userMap" type="SysUserEntity">
+        <id property="user_id" column="id"/>
+        <result property="user_name" column="name"/>
+        <result property="user_pwd" column="password"/>
+        <collection property="roles" ofType="SysRoleEntity">
+            <id property="role_id" column="roleId"/>
+            <result property="role_name" column="roleName"/>
+            <collection property="permissions" ofType="SysPermisessionEntity">
+                <id property="p_id" column="permissionId"/>
+                <result property="p_name" column="permissionName"/>
+                <result property="p_url" column="permissionUrl"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findByName" parameterType="String" resultType="SysUserEntity">
+      SELECT user_id, user_name, user_pwd
+        FROM sys_user
+          WHERE user_name = #{name}
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="userMap">
+      SELECT sys_user.user_id as id, sys_user.user_name as name, user_pwd as password,
+			sys_role.role_id as roleId, sys_role.role_name as roleName,
+			sys_permission.p_id as permissionId,
+          sys_permission.p_name as permissionName,
+           sys_permission.p_url as permissionUrl
+        FROM sys_user, sys_user_role, sys_role, sys_permission_role, sys_permission
+          WHERE sys_user.user_id = #{id}
+            AND sys_user.user_id = sys_user_role.user_id
+            AND sys_user_role.role_id = sys_role.role_id
+            AND sys_role.role_id = sys_permission_role.role_id
+            AND sys_permission_role.p_id = sys_permission.p_id
+    </select>
+
+</mapper>

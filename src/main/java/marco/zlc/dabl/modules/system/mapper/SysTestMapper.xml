@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="marco.zlc.dabl.modules.system.dao.SysTestMapper">
+
+    <resultMap id="userMap" type="SysUserEntity">
+        <id property="user_id" column="id"/>
+        <result property="user_name" column="name"/>
+        <result property="user_pwd" column="password"/>
+        <collection property="roles" ofType="SysRoleEntity">
+            <id property="role_id" column="roleId"/>
+            <result property="role_name" column="roleName"/>
+            <collection property="permissions" ofType="SysPermisessionEntity">
+                <id property="p_id" column="permissionId"/>
+                <result property="p_name" column="permissionName"/>
+                <result property="p_url" column="permissionUrl"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="TextSel" parameterType="String" resultType="Map">
+      SELECT user_id, user_name, user_pwd
+        FROM sys_user
+          WHERE user_name = #{name}
+    </select>
+
+
+
+</mapper>
